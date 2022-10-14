@@ -1,4 +1,4 @@
-package com.revature.Repository;
+package com.revature.repository;
 
 public class EmployeeRepository {
 

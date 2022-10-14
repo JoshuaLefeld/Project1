@@ -1,4 +1,4 @@
-package com.revature.Types;
+package com.revature.types;
 
 public class Ticket {
 

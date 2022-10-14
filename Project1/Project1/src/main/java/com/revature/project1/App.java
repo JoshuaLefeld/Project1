@@ -1,4 +1,4 @@
-package com.revature.Project1;
+package com.revature.project1;
 
 
 public class App 
