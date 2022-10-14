@@ -1,0 +1,4 @@
+/.metadata/
+
+# ignore ALL .class files
+*.class
