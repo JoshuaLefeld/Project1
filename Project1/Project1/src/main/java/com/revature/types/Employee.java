@@ -4,9 +4,9 @@ public class Employee {
 
 	private String username;
 	private String password;
-	private  boolean isManager;
+	private  int isManager;
 	
-	public Employee(String username, String password, boolean isManager) {
+	public Employee(String username, String password, int isManager) {
 		this.username = username;
 		this.password = password;
 		this.isManager = isManager;
@@ -28,11 +28,11 @@ public class Employee {
 		this.password = password;
 	}
 
-	public boolean isManager() {
+	public int isManager() {
 		return isManager;
 	}
 
-	public void setManager(boolean isManager) {
+	public void setManager(int isManager) {
 		this.isManager = isManager;
 	}
 

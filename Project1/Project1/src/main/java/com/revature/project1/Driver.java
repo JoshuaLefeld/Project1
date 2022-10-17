@@ -1,5 +1,10 @@
 package com.revature.project1;
 
+import com.revature.repository.TicketRepository;
+import com.revature.types.Employee;
+import com.revature.types.Ticket;
+import com.revature.repository.EmployeeRepository;
+
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -19,7 +24,9 @@ public class Driver {
 		});
 		
 		app.get("/employeeloggedin", (Context ctx) -> {
-			ctx.res().getWriter().write("Employee Logged in place holder");
+			EmployeeRepository employeerepo = new EmployeeRepository();
+			Employee tester = employeerepo.getEmployee();
+			System.out.println(tester);
 		});
 		
 		app.get("/managerloggedin", (Context ctx) -> {

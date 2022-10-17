@@ -3,3 +3,6 @@
 # ignore ALL .class files
 *.class
 # ignore all .properties files
+*.properties
+#ignore SQL file
+SQL

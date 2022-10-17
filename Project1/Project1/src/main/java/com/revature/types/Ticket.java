@@ -8,7 +8,6 @@ public class Ticket {
 	private String status;
 	
 	public Ticket(String creator, double amount, String description, String status) {
-		super();
 		this.creator = creator;
 		this.amount = amount;
 		this.description = description;
