@@ -2,3 +2,4 @@
 
 # ignore ALL .class files
 *.class
+# ignore all .properties files
