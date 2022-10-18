@@ -6,12 +6,14 @@ public class Ticket {
 	private double amount;
 	private String description;
 	private String status;
-	
-	public Ticket(String creator, double amount, String description, String status) {
+	private int id;
+
+	public Ticket(String creator, double amount, String description, String status, int id) {
 		this.creator = creator;
 		this.amount = amount;
 		this.description = description;
 		this.status = status;
+		this.id = id;
 	}
 
 	public String getCreator() {
@@ -46,10 +48,14 @@ public class Ticket {
 		this.status = status;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
 	@Override
 	public String toString() {
 		return "Ticket [creator=" + creator + ", amount=" + amount + ", description=" + description + ", status="
-				+ status + "]";
+				+ status + ", id=" + id + "]";
 	}
-
+	
 }
