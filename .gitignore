@@ -6,3 +6,5 @@
 *.properties
 #ignore SQL file
 SQL
+#ignore flowcharts
+Flowcharts

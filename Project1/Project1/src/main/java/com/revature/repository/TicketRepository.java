@@ -1,33 +1,35 @@
 package com.revature.repository;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.revature.types.Ticket;
 import com.revature.util.ConnectionFactory;
 
 public class TicketRepository {
 	
-	public Ticket getTicket() 
+	public Set<Ticket> getTickets(String user) 
 	{
-		Connection conn = null;
-		Statement stmt = null;
+		String SQLcommand = "SELECT * FROM tickets WHERE creator = ?";
 		ResultSet results = null;
-		Ticket tick = null;
-		try{
-			conn = ConnectionFactory.dbConnection();
-			stmt = conn.createStatement();
-			results = stmt.executeQuery("SELECT * FROM tickets WHERE creator = 'testemployee'");
-			results.next();
-			
-			tick = new Ticket(results.getString(0), results.getDouble(1), results.getString(2), results.getString(3));
+		Set<Ticket> tick = new HashSet<Ticket>();
+		try(Connection conn = ConnectionFactory.dbConnection()){
+			PreparedStatement stmt = conn.prepareStatement(SQLcommand);
+			stmt.setString(1, user);
+			results = stmt.executeQuery();
+			while(results.next())
+			{
+			tick.add(new Ticket(results.getString(1), results.getDouble(2), results.getString(3), results.getString(4)));
+			}
 			return tick;
 		}catch(SQLException e) {
 			e.getStackTrace();
 		}finally {
 			try {
-				stmt.close();
 				results.close();
 			}catch(SQLException e) {
 				e.getStackTrace();

@@ -3,6 +3,10 @@ package com.revature.project1;
 import com.revature.repository.TicketRepository;
 import com.revature.types.Employee;
 import com.revature.types.Ticket;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import com.revature.repository.EmployeeRepository;
 
 import io.javalin.Javalin;
@@ -14,19 +18,22 @@ public class Driver {
 		
 		//Open Javalin with port 8000
 		Javalin app = Javalin.create().start(8000);
+		Employee currentuser = null;
 		
-		app.get("/login", (Context ctx) -> {
+		app.post("/login", (Context ctx) -> {
 			ctx.res().getWriter().write("Login place holder");
 		});
 		
-		app.get("/register", (Context ctx) -> {
-			ctx.res().getWriter().write("Register place holder");
-		});
+		app.post("/new-user", ctx -> {
+	           Employee recievedUser = ctx.bodyAsClass(Employee.class);
+	           System.out.println(recievedUser);
+	           ctx.status(201);
+	    });
 		
 		app.get("/employeeloggedin", (Context ctx) -> {
 			EmployeeRepository employeerepo = new EmployeeRepository();
-			Employee tester = employeerepo.getEmployee();
-			System.out.println(tester);
+			Employee tester = employeerepo.getEmployee("testemployee");
+			ctx.result(tester.toString());
 		});
 		
 		app.get("/managerloggedin", (Context ctx) -> {
@@ -34,11 +41,13 @@ public class Driver {
 		});
 		
 		app.get("/viewtickets", (Context ctx) -> {
-			ctx.res().getWriter().write("View tickets placeholder");
+			ctx.res().getWriter().write("View tickets(manager) placeholder");
 		});
 		
 		app.get("/viewpasttickets", (Context ctx) -> {
-			ctx.res().getWriter().write("View past tickets placeholder");
+			TicketRepository ticketrepo = new TicketRepository();
+			Set<Ticket> tester = new HashSet<Ticket>(ticketrepo.getTickets("testemployee"));
+			ctx.result(tester.toString());
 		});
 	}
 }

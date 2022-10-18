@@ -19,8 +19,8 @@ public class ConnectionFactory {
 		}
 		return DriverManager.getConnection(
 				props.getProperty("url"), 
-				props.getProperty("username"), 
-				props.getProperty("password"));
+				props.getProperty("dbuser"), 
+				props.getProperty("dbpassword"));
 	}
 }
 

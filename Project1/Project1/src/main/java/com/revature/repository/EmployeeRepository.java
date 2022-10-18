@@ -9,21 +9,26 @@ import com.revature.util.ConnectionFactory;
 
 public class EmployeeRepository {
 	
-	public Employee getEmployee()
+	public Employee getEmployee(String user)
 	{
 		String SQLcommand = "SELECT * FROM employees WHERE username = ?";
 		ResultSet results = null;
 		Employee emp = null;
 		try(Connection conn = ConnectionFactory.dbConnection()){
 			PreparedStatement stmt = conn.prepareStatement(SQLcommand);
-			stmt.setString(1, "testemployee");
+			stmt.setString(1, user);
 			results = stmt.executeQuery();
 			results.next();
-			
-			emp = new Employee(results.getString(0), results.getString(2), results.getInt(2));
+			emp = new Employee(results.getString(1), results.getString(2), results.getInt(3));
 			return emp;
 		}catch(SQLException e) {
 			e.getStackTrace();
+		}finally {
+			try {
+				results.close();
+			}catch(SQLException e) {
+				e.getStackTrace();
+			}
 		}
 		return emp;
 	}
