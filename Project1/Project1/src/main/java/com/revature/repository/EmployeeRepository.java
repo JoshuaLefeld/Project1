@@ -11,7 +11,7 @@ public class EmployeeRepository {
 	
 	public Employee getEmployee(String user)
 	{
-		String SQLcommand = "SELECT * FROM employees WHERE username = ?";
+		String SQLcommand = "SELECT * FROM employees WHERE username = LOWER(?)";
 		ResultSet results = null;
 		Employee emp = new Employee();
 		try(Connection conn = ConnectionFactory.dbConnection()){
@@ -41,7 +41,7 @@ public class EmployeeRepository {
 	
 	public boolean registerEmployee(Employee newuser)
 	{
-		String SQLcommand = "INSERT INTO employees VALUES (?, ?, ?)";
+		String SQLcommand = "INSERT INTO employees VALUES (LOWER(?), ?, ?)";
 		Employee check = new Employee();
 		try(Connection conn = ConnectionFactory.dbConnection()){
 			PreparedStatement stmt = conn.prepareStatement(SQLcommand);

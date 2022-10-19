@@ -105,13 +105,9 @@ public class Driver {
 			ctx.res().getWriter().write("View tickets placeholder");
 		});
 		
-		app.get("/approveticket", (Context ctx) -> {
-			ctx.res().getWriter().write("View tickets(manager) placeholder");
+		app.get("/updateticket", (Context ctx) -> {
+			ctx.res().getWriter().write("Update tickets placeholder");
 		});
-		
-		app.get("/denyticket", (Context ctx) -> {
-			ctx.res().getWriter().write("View tickets(manager) placeholder");
-		});
-		
+
 	}
 }
