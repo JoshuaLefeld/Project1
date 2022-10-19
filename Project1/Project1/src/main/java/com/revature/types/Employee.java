@@ -13,13 +13,13 @@ public class Employee {
 	}
 	
 	public Employee(String username, String password) {
-		this.username = username;
+		this.username = username.toLowerCase();
 		this.password = password;
 		manager = 0;
 	}
 	
 	public Employee(String username, String password, int manager) {
-		this.username = username;
+		this.username = username.toLowerCase();
 		this.password = password;
 		this.manager = manager;
 	}
@@ -41,7 +41,14 @@ public class Employee {
 	}
 
 	public boolean checkPassword(Employee test) {
-		return password.equals(test.getPassword());
+		if(test.getPassword() != null)
+		{
+			return password.equals(test.getPassword());
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	public boolean isManager() {
@@ -69,7 +76,14 @@ public class Employee {
 	}
 	
 	public boolean equals(Employee test){
-	return test.getUsername().equals(username);
+		if(test.getUsername() != null)
+		{
+			return test.getUsername().equals(username.toLowerCase());
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 }

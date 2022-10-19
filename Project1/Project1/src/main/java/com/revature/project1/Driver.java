@@ -25,43 +25,84 @@ public class Driver {
 		Javalin app = Javalin.create().start(8000);
 		
 		app.post("/login", (Context ctx) -> {
-			Employee temp = ctx.bodyAsClass(Employee.class);
-			EmployeeRepository employeerepo = new EmployeeRepository();
-			Employee test = employeerepo.getEmployee(temp.getUsername());
-			if((temp.equals(test)) && (temp.checkPassword(test))) 
+			if(currentuser.getUsername() == null)
 			{
-				currentuser.setUsername(test.getUsername());
-				currentuser.setPassword(test.getPassword());
-				currentuser.setManager(test.getManager());
-				ctx.result("Login Successful");
+				Employee temp = ctx.bodyAsClass(Employee.class);
+				EmployeeRepository employeerepo = new EmployeeRepository();
+				Employee test = employeerepo.getEmployee(temp.getUsername());
+				if((temp.equals(test)) && (temp.checkPassword(test))) 
+				{
+					currentuser.setUsername(test.getUsername());
+					currentuser.setPassword(test.getPassword());
+					currentuser.setManager(test.getManager());
+					ctx.result("Login Successful");
+					ctx.status(HttpStatus.ACCEPTED_202);
+				}
+				else 
+				{
+					ctx.result("Login Unsuccessful");
+					ctx.status(HttpStatus.BAD_REQUEST_400);
+				}
+			}
+			else
+			{
+				ctx.result("User has not logged out.");
+				ctx.status(HttpStatus.BAD_REQUEST_400);
+			}
+		});
+		
+		app.post("/logout", (Context ctx) -> {
+			if(currentuser.getUsername() != null)
+			{
+				currentuser.setUsername(null);
+				currentuser.setPassword(null);
+				currentuser.setManager(0);
+				ctx.result("Logout Successful");
 				ctx.status(HttpStatus.ACCEPTED_202);
 			}
-			else 
+			else
 			{
-				ctx.result("Login Unsuccessful");
+				ctx.result("There is no user currently logged in.");
 				ctx.status(HttpStatus.BAD_REQUEST_400);
 			}
 		});
 		
 		app.post("/register", ctx -> {
-	           Employee recievedUser = ctx.bodyAsClass(Employee.class);
-	           System.out.println(recievedUser);
-	           ctx.status(HttpStatus.CREATED_201);
+			if(currentuser.getUsername() == null)
+			{
+				Employee temp = ctx.bodyAsClass(Employee.class);
+				EmployeeRepository employeerepo = new EmployeeRepository();
+				if(employeerepo.registerEmployee(temp)) 
+				{
+					currentuser.setUsername(temp.getUsername());
+					currentuser.setPassword(temp.getPassword());
+					currentuser.setManager(temp.getManager());
+					ctx.result("User has been sucessfully created.");
+					ctx.status(HttpStatus.CREATED_201);
+				}
+				else 
+				{
+					ctx.result("Username is taken.");
+					ctx.status(HttpStatus.UNAUTHORIZED_401);
+				}
+			}
+			else
+			{
+				ctx.result("There is a user currently logged in.");
+				ctx.status(HttpStatus.BAD_REQUEST_400);
+			}
+			
 	    });
 		
-		app.get("/employeeloggedin", (Context ctx) -> {
+		app.get("/createticket", (Context ctx) -> {
 			EmployeeRepository employeerepo = new EmployeeRepository();
 			Employee tester = employeerepo.getEmployee("testemployee");
 			ctx.result(tester.toString());
 			ctx.status(HttpStatus.UNAUTHORIZED_401);
 		});
 		
-		app.get("/managerloggedin", (Context ctx) -> {
-			ctx.res().getWriter().write("Manager Logged in place holder");
-		});
-		
 		app.get("/viewtickets", (Context ctx) -> {
-			ctx.res().getWriter().write("View tickets(manager) placeholder");
+			ctx.res().getWriter().write("View tickets placeholder");
 		});
 		
 		app.get("/approveticket", (Context ctx) -> {
@@ -72,10 +113,5 @@ public class Driver {
 			ctx.res().getWriter().write("View tickets(manager) placeholder");
 		});
 		
-		app.get("/viewpasttickets", (Context ctx) -> {
-			TicketRepository ticketrepo = new TicketRepository();
-			Set<Ticket> tester = new HashSet<Ticket>(ticketrepo.getTickets("testemployee"));
-			ctx.result(tester.toString());
-		});
 	}
 }

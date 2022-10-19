@@ -13,14 +13,20 @@ public class EmployeeRepository {
 	{
 		String SQLcommand = "SELECT * FROM employees WHERE username = ?";
 		ResultSet results = null;
-		Employee emp = null;
+		Employee emp = new Employee();
 		try(Connection conn = ConnectionFactory.dbConnection()){
 			PreparedStatement stmt = conn.prepareStatement(SQLcommand);
 			stmt.setString(1, user);
 			results = stmt.executeQuery();
-			results.next();
-			emp = new Employee(results.getString(1), results.getString(2), results.getInt(3));
-			return emp;
+			if(results.next())
+			{
+				emp = new Employee(results.getString(1), results.getString(2), results.getInt(3));
+				return emp;
+			}
+			else
+			{
+				return emp;
+			}
 		}catch(SQLException e) {
 			e.getStackTrace();
 		}finally {
@@ -31,6 +37,31 @@ public class EmployeeRepository {
 			}
 		}
 		return emp;
+	}
+	
+	public boolean registerEmployee(Employee newuser)
+	{
+		String SQLcommand = "INSERT INTO employees VALUES (?, ?, ?)";
+		Employee check = new Employee();
+		try(Connection conn = ConnectionFactory.dbConnection()){
+			PreparedStatement stmt = conn.prepareStatement(SQLcommand);
+			stmt.setString(1, newuser.getUsername());
+			stmt.setString(2, newuser.getPassword());
+			stmt.setInt(3, newuser.getManager());
+			stmt.executeUpdate();
+			check = getEmployee(newuser.getUsername());
+			if(check.getUsername() != null && newuser.equals(check))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}catch(SQLException e) {
+			e.getStackTrace();
+		}
+		return false;
 	}
 	
 }
