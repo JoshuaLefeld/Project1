@@ -20,6 +20,8 @@ public class Driver {
 		
 		//Tracks the current employee who's logged in
 		Employee currentuser = new Employee();
+		EmployeeRepository employeerepo = new EmployeeRepository();
+		TicketRepository ticketrepo = new TicketRepository();
 		
 		//Open Javalin with port 8000
 		Javalin app = Javalin.create().start(8000);
@@ -28,7 +30,6 @@ public class Driver {
 			if(currentuser.getUsername() == null)
 			{
 				Employee temp = ctx.bodyAsClass(Employee.class);
-				EmployeeRepository employeerepo = new EmployeeRepository();
 				Employee test = employeerepo.getEmployee(temp.getUsername());
 				if((temp.equals(test)) && (temp.checkPassword(test))) 
 				{
@@ -71,7 +72,6 @@ public class Driver {
 			if(currentuser.getUsername() == null)
 			{
 				Employee temp = ctx.bodyAsClass(Employee.class);
-				EmployeeRepository employeerepo = new EmployeeRepository();
 				if(employeerepo.registerEmployee(temp)) 
 				{
 					currentuser.setUsername(temp.getUsername());
@@ -94,11 +94,44 @@ public class Driver {
 			
 	    });
 		
-		app.get("/createticket", (Context ctx) -> {
-			EmployeeRepository employeerepo = new EmployeeRepository();
-			Employee tester = employeerepo.getEmployee("testemployee");
-			ctx.result(tester.toString());
-			ctx.status(HttpStatus.UNAUTHORIZED_401);
+		app.post("/createticket", (Context ctx) -> {
+			if(currentuser.getUsername() != null)
+			{
+				if(!currentuser.isManager())
+					{
+					Ticket temp = ctx.bodyAsClass(Ticket.class);
+					if(currentuser.getUsername().equals(temp.getCreator()))
+						{
+			
+						if(ticketrepo.createTicket(temp))
+							{
+								temp.setId(ticketrepo.getTotalTickets());
+								ctx.result("Ticket has been created!\n" + temp.toString());
+								ctx.status(HttpStatus.CREATED_201);
+							}
+						else
+							{
+								ctx.result("Ticket could not be created!");
+								ctx.status(HttpStatus.BAD_REQUEST_400);
+							}
+						}
+					else 
+						{
+							ctx.result("Invalid ticket creator.");
+							ctx.status(HttpStatus.FORBIDDEN_403);
+						}
+					}
+				else
+					{
+						ctx.result("User is not an employee.");
+						ctx.status(HttpStatus.FORBIDDEN_403);
+					}
+			}
+			else
+			{
+				ctx.result("Not currently logged in.");
+				ctx.status(HttpStatus.FORBIDDEN_403);
+			}
 		});
 		
 		app.get("/viewtickets", (Context ctx) -> {

@@ -12,6 +12,43 @@ import com.revature.util.ConnectionFactory;
 
 public class TicketRepository {
 	
+	private int totaltickets;
+	
+	private int TotalTickets()
+	{
+		String SQLcommand = "SELECT COUNT(id) FROM tickets";
+		try(Connection conn = ConnectionFactory.dbConnection()){
+			PreparedStatement stmt = conn.prepareStatement(SQLcommand);
+			ResultSet results = stmt.executeQuery();
+			if(results.next())
+			{
+				int count = results.getInt(1);
+				return count;
+			}
+			else
+			{
+				return -1;
+			}
+		}catch(SQLException e) {
+			e.getStackTrace();
+		}
+		return -1;
+	}
+	
+	public int getTotalTickets() {
+		return totaltickets;
+	}
+	
+	public void setTotalTickets() {
+		totaltickets = TotalTickets();
+	}
+	
+	public TicketRepository() 
+	{
+		setTotalTickets();
+		totaltickets = getTotalTickets();
+	}
+	
 	public Set<Ticket> getTickets(String user) 
 	{
 		String SQLcommand = "SELECT * FROM tickets WHERE creator = ?";
@@ -23,7 +60,7 @@ public class TicketRepository {
 			results = stmt.executeQuery();
 			while(results.next())
 			{
-			tick.add(new Ticket(results.getString(1), results.getDouble(2), results.getString(3), results.getString(4), results.getInt(5)));
+			tick.add(new Ticket(results.getString(1), results.getDouble(2), results.getString(3), results.getInt(4), results.getString(5)));
 			}
 			return tick;
 		}catch(SQLException e) {
@@ -49,7 +86,7 @@ public class TicketRepository {
 			results = stmt.executeQuery();
 			while(results.next())
 			{
-			tick.add(new Ticket(results.getString(1), results.getDouble(2), results.getString(3), results.getString(4), results.getInt(5)));
+			tick.add(new Ticket(results.getString(1), results.getDouble(2), results.getString(3), results.getInt(4), results.getString(5)));
 			}
 			return tick;
 		}catch(SQLException e) {
@@ -66,7 +103,7 @@ public class TicketRepository {
 	
 	public Ticket getTicket(int id) 
 	{
-		String SQLcommand = "SELECT * FROM tickets WHERE creator = ?";
+		String SQLcommand = "SELECT * FROM tickets WHERE id = ?";
 		ResultSet results = null;
 		Ticket tick = null;
 		try(Connection conn = ConnectionFactory.dbConnection()){
@@ -74,7 +111,7 @@ public class TicketRepository {
 			stmt.setInt(1, id);
 			results = stmt.executeQuery();
 			results.next();
-			tick = new Ticket(results.getString(1), results.getDouble(2), results.getString(3), results.getString(4), results.getInt(5));
+			tick = new Ticket(results.getString(1), results.getDouble(2), results.getString(3), results.getInt(4), results.getString(5));
 			return tick;
 		}catch(SQLException e) {
 			e.getStackTrace();
@@ -136,6 +173,32 @@ public class TicketRepository {
 			}catch(SQLException e) {
 				e.getStackTrace();
 			}
+		}
+		return false;
+	}
+
+	public boolean createTicket(Ticket newticket)	
+	{
+		String SQLcommand = "INSERT INTO tickets VALUES (LOWER(?), ?, ?, ((SELECT count(id) FROM tickets)+1), 'PENDING')";
+		Ticket check = new Ticket();
+		try(Connection conn = ConnectionFactory.dbConnection()){
+			PreparedStatement stmt = conn.prepareStatement(SQLcommand);
+			stmt.setString(1, newticket.getCreator());
+			stmt.setDouble(2, newticket.getAmount());
+			stmt.setString(3, newticket.getDescription());
+			stmt.executeUpdate();
+			setTotalTickets();
+			check = getTicket(totaltickets);
+			if(check.getId() > 0 && newticket.equals(check))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}catch(SQLException e) {
+			e.getStackTrace();
 		}
 		return false;
 	}
