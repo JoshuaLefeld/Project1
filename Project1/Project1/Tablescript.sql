@@ -10,16 +10,17 @@ CREATE TABLE IF NOT EXISTS tickets(
 	creator varchar(20),
 	amount decimal, 
 	description varchar,
+	id int UNIQUE,
 	status varchar(10) DEFAULT 'PENDING',
-	id SERIAL UNIQUE,
 	FOREIGN KEY(creator) REFERENCES employees(username),
 	PRIMARY KEY(id)
 );
 
 INSERT INTO employees VALUES ('testemployee', 'employeepassword', 0);
 INSERT INTO employees VALUES ('testmanager', 'managerpassword', 1);
-INSERT INTO tickets VALUES ('testemployee', 2658.12, 'Business trip expenses during weeks 12-14');
+INSERT INTO tickets VALUES ('testemployee', 2658.12, 'Business trip expenses during weeks 12-14', ((SELECT count(id) FROM tickets)+1));
 
 SELECT * FROM tickets;
 SELECT * FROM employees;
 DELETE FROM employees WHERE username = 'jimjonas';
+--DELETE FROM tickets WHERE id = 1;
