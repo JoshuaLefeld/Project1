@@ -22,3 +22,4 @@ INSERT INTO tickets VALUES ('testemployee', 2658.12, 'Business trip expenses dur
 
 SELECT * FROM tickets;
 SELECT * FROM employees;
+DELETE FROM employees WHERE username = 'jimjonas';
