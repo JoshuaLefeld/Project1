@@ -72,6 +72,7 @@ public class Driver {
 			if(currentuser.getUsername() == null)
 			{
 				Employee temp = ctx.bodyAsClass(Employee.class);
+				temp.setUsername(temp.getUsername().toLowerCase());
 				if(employeerepo.registerEmployee(temp)) 
 				{
 					currentuser.setUsername(temp.getUsername());
@@ -100,6 +101,7 @@ public class Driver {
 				if(!currentuser.isManager())
 					{
 					Ticket temp = ctx.bodyAsClass(Ticket.class);
+					temp.setCreator(temp.getCreator().toLowerCase());
 					if(currentuser.getUsername().equals(temp.getCreator()))
 						{
 			

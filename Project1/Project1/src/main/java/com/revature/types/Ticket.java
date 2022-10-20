@@ -18,7 +18,7 @@ public class Ticket {
 	}
 	
 	public Ticket(String creator, double amount, String description) {
-		this.creator = creator;
+		this.creator = creator.toLowerCase();
 		this.amount = amount;
 		this.description = description;
 		id = -1;
@@ -26,7 +26,7 @@ public class Ticket {
 	}
 	
 	public Ticket(String creator, double amount, String description, int id, String status) {
-		this.creator = creator;
+		this.creator = creator.toLowerCase();
 		this.amount = amount;
 		this.description = description;
 		this.id = id;
@@ -38,7 +38,7 @@ public class Ticket {
 	}
 
 	public void setCreator(String creator) {
-		this.creator = creator;
+		this.creator = creator.toLowerCase();
 	}
 
 	public double getAmount() {
@@ -81,7 +81,7 @@ public class Ticket {
 
 	public boolean equals(Ticket test)
 	{
-		if(test.getId() > 0)
+		if(test.getId() >= 0)
 		{
 			return creator.equals(test.getCreator());
 		}
