@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS tickets(
 INSERT INTO employees VALUES ('testemployee', 'employeepassword', 0);
 INSERT INTO employees VALUES ('testmanager', 'managerpassword', 1);
 INSERT INTO tickets VALUES ('testemployee', 2658.12, 'Business trip expenses during weeks 12-14', ((SELECT count(id) FROM tickets)+1));
+INSERT INTO tickets VALUES ('testemployee', 1643.89, 'Expenses for the event on Oct 3, 2022', ((SELECT count(id) FROM tickets)+1), 'APPROVED');
+--UPDATE tickets SET status = 'APPROVED' WHERE id = 2;
 
 SELECT * FROM tickets;
 SELECT * FROM employees;

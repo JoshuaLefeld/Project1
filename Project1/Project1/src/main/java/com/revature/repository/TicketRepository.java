@@ -125,54 +125,64 @@ public class TicketRepository {
 		return tick;
 	}
 	
-	public boolean approveTicket(int id) 
+	public boolean approveTicket(Ticket updatedticket) 
 	{
-		String SQLcommand = "SELECT * FROM tickets WHERE id = ?";
-		ResultSet results = null;
+		String SQLcommand = "UPDATE tickets SET status = 'APPROVED' WHERE id = ?";
+		Ticket check = new Ticket();
 		try(Connection conn = ConnectionFactory.dbConnection()){
-			PreparedStatement stmt = conn.prepareStatement(SQLcommand);
-			stmt.setInt(1, id);
-			results = stmt.executeQuery();
-			results.next();
-			if(results.getString(4).equals("PENDING"))
+			check = getTicket(updatedticket.getId());
+			if(check.getStatus().equals("PENDING"))
 			{
-				//Code for updating a record with APPROVED
-				return true;
+				PreparedStatement stmt = conn.prepareStatement(SQLcommand);
+				stmt.setInt(1, updatedticket.getId());
+				stmt.executeUpdate();
+				check = getTicket(updatedticket.getId());
+				if(!check.getStatus().equals("PENDING"))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
 			}
 		}catch(SQLException e) {
 			e.getStackTrace();
-		}finally {
-			try {
-				results.close();
-			}catch(SQLException e) {
-				e.getStackTrace();
-			}
 		}
 		return false;
 	}
 	
-	public boolean denyTicket(int id) 
+	public boolean denyTicket(Ticket updatedticket) 
 	{
-		String SQLcommand = "SELECT * FROM tickets WHERE id = ?";
-		ResultSet results = null;
+		String SQLcommand = "UPDATE tickets SET status = 'APPROVED' WHERE id = ?";
+		Ticket check = new Ticket();
 		try(Connection conn = ConnectionFactory.dbConnection()){
-			PreparedStatement stmt = conn.prepareStatement(SQLcommand);
-			stmt.setInt(1, id);
-			results = stmt.executeQuery();
-			results.next();
-			if(results.getString(4).equals("PENDING"))
+			check = getTicket(updatedticket.getId());
+			if(check.getStatus().equals("PENDING"))
 			{
-				//Code for updating a record with DENIED
-				return true;
+				PreparedStatement stmt = conn.prepareStatement(SQLcommand);
+				stmt.setInt(1, updatedticket.getId());
+				stmt.executeUpdate();
+				check = getTicket(updatedticket.getId());
+				if(!check.getStatus().equals("PENDING"))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
 			}
 		}catch(SQLException e) {
 			e.getStackTrace();
-		}finally {
-			try {
-				results.close();
-			}catch(SQLException e) {
-				e.getStackTrace();
-			}
 		}
 		return false;
 	}

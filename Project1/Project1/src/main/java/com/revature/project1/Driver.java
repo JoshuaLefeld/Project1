@@ -142,11 +142,11 @@ public class Driver {
 						Set<Ticket> ticket = ticketrepo.getTickets(currentuser.getUsername());
 						ctx.result(ticket.toString());
 					}
-				else
-					{
-						ctx.result("User is not an employee.");
-						ctx.status(HttpStatus.FORBIDDEN_403);
-					}
+				if(currentuser.isManager())
+				{
+					Set<Ticket> ticket = ticketrepo.getPendingTickets();
+					ctx.result(ticket.toString());
+				}
 			}
 			else
 			{
@@ -155,8 +155,66 @@ public class Driver {
 			}
 		});
 		
-		app.get("/updateticket", (Context ctx) -> {
-			ctx.res().getWriter().write("Update tickets placeholder");
+		app.post("/updateticket", (Context ctx) -> {
+			if(currentuser.getUsername() != null)
+			{
+				if(currentuser.isManager())
+				{
+					Ticket temp = ctx.bodyAsClass(Ticket.class);
+					if(!temp.getStatus().equals("PENDING"))
+					{
+						if((!temp.getStatus().equals("APPROVE")) || (!temp.getStatus().equals("DENY")))
+						{
+							if(temp.getStatus().equals("APPROVE"))
+							{
+								if(ticketrepo.approveTicket(temp))
+								{
+									ctx.result("Ticket (" + temp.getId() + ") has been approved.");
+									ctx.status(HttpStatus.CREATED_201);
+								}
+								else
+								{
+									ctx.result("Ticket could not be approved.");
+									ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
+								}
+							}
+							if(temp.getStatus().equals("DENY"))
+							{
+								if(ticketrepo.denyTicket(temp))
+								{
+									ctx.result("Ticket (" + temp.getId() + ") has been denied.");
+									ctx.status(HttpStatus.CREATED_201);
+								}
+								else
+								{
+									ctx.result("Ticket could not be denied.");
+									ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
+								}
+							}
+						}
+						else
+						{
+							ctx.result("Invalid status sent.");
+							ctx.status(HttpStatus.BAD_REQUEST_400);
+						}
+					}
+					else
+					{
+						ctx.result("Cannot change already approved/denied tickets.");
+						ctx.status(HttpStatus.FORBIDDEN_403);
+					}
+				}
+				else
+				{
+					ctx.result("User is not a manager.");
+					ctx.status(HttpStatus.FORBIDDEN_403);
+				}
+			}
+			else
+			{
+				ctx.result("Not currently logged in.");
+				ctx.status(HttpStatus.FORBIDDEN_403);
+			}
 		});
 
 	}

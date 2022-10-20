@@ -75,8 +75,8 @@ public class Ticket {
 	
 	@Override
 	public String toString() {
-		return "Creator: " + creator + ", Amount: $" + amount + "\nDescription: \n" + description + "\nTicket ID: " + id
-				+ ", Status: " + status + "\n\n";
+		return "\n\nCreator: " + creator + ", Amount: $" + amount + "\nDescription: \n" + description + "\nTicket ID: " + id
+				+ ", Status: " + status;
 	}
 
 	public boolean equals(Ticket test)
