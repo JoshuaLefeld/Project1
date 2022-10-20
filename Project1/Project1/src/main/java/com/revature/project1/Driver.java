@@ -135,7 +135,24 @@ public class Driver {
 		});
 		
 		app.get("/viewtickets", (Context ctx) -> {
-			ctx.res().getWriter().write("View tickets placeholder");
+			if(currentuser.getUsername() != null)
+			{
+				if(!currentuser.isManager())
+					{
+						Set<Ticket> ticket = ticketrepo.getTickets(currentuser.getUsername());
+						ctx.result(ticket.toString());
+					}
+				else
+					{
+						ctx.result("User is not an employee.");
+						ctx.status(HttpStatus.FORBIDDEN_403);
+					}
+			}
+			else
+			{
+				ctx.result("Not currently logged in.");
+				ctx.status(HttpStatus.FORBIDDEN_403);
+			}
 		});
 		
 		app.get("/updateticket", (Context ctx) -> {
