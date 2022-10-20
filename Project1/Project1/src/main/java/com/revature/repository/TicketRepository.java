@@ -158,7 +158,7 @@ public class TicketRepository {
 	
 	public boolean denyTicket(Ticket updatedticket) 
 	{
-		String SQLcommand = "UPDATE tickets SET status = 'APPROVED' WHERE id = ?";
+		String SQLcommand = "UPDATE tickets SET status = 'DENIED' WHERE id = ?";
 		Ticket check = new Ticket();
 		try(Connection conn = ConnectionFactory.dbConnection()){
 			check = getTicket(updatedticket.getId());
